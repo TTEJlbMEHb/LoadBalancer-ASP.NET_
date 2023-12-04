@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\LoadBalancer1.props" />
+</Project>

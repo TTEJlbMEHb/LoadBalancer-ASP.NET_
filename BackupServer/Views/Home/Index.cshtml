@@ -1,0 +1,88 @@
+﻿@using LoadBalancer.Domain.Entity;
+@model List<Matrix>
+
+@{
+    ViewData["Title"] = "Home Page";
+    bool authenticated = User.Identity.IsAuthenticated;
+    bool admin = User.IsInRole("Admin");
+}
+
+<body class="d-flex flex-column min-vh-100">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10">
+                <table class="table">
+                    <tr>
+                        <td class="text-center">Task UUID</td>
+                        <td class="text-center">Status</td>
+                        <td class="text-center">Result</td>
+                        <td class="text-center">Action</td>
+                    </tr>
+                    @if (authenticated)
+                    {
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var task in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">@task.Guid</td>
+                                    <td class="text-center">@task.Status</td>
+                                    <td class="text-center">
+                                        <a asp-controller="Home" asp-action="TaskResult"
+                                           asp-route-guid="@task.Guid" class="btn btn-primary">Details</a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="Home" asp-action="Delete"
+                                           asp-route-guid="@task.Guid" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">Not found!</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-danger">
+                                <a asp-controller="User" asp-action="Login">Login</a>
+                                or <a asp-controller="User" asp-action="Signup">Register</a>
+                                to see your task history
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            @if (authenticated)
+            {
+                <div class="col-md-2">
+                    <div class="d-flex flex-column">
+                        <h2 class="text-center">Tasks</h2>
+                        <a asp-controller="HeavyTasks" asp-action="Calculator" class="btn btn-outline-primary mb-2">Calculator</a>
+                        <a asp-controller="HeavyTasks" asp-action="Matrix" class="btn btn-outline-primary mb-2">Matrix</a>
+                        @if (admin)
+                        {
+                            <a href="/Hangfire" class="btn btn-outline-secondary mb-2">Dashboard</a>
+                        }
+                        <a asp-controller="User" asp-action="Logout" class="btn btn-outline-danger mb-2">Logout</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-2">
+                    <div class="d-flex flex-column">
+                        <h2 class="text-center">Tasks</h2>
+                        <a asp-controller="User" asp-action="Login" class="btn btn-outline-primary mb-2">Login</a>
+                        <a asp-controller="User" asp-action="Signup" class="btn btn-outline-primary mb-2">Signup</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</body>

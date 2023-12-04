@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  Web1:
+    image: ${DOCKER_REGISTRY-}loadbalancer
+    container_name: web1
+    build:
+      context: .
+      dockerfile: LoadBalancer\Dockerfile
+  
+  Web2:
+    image: ${DOCKER_REGISTRY-}loadbalancer
+    container_name: web2
+    build:
+      context: .
+      dockerfile: LoadBalancer\Dockerfile
+
+  sql_server:
+    image: mcr.microsoft.com/mssql/server
+    container_name: sql_server
+    environment:
+      SA_PASSWORD: "Password"
+    ports:
+      - "1433:1433"

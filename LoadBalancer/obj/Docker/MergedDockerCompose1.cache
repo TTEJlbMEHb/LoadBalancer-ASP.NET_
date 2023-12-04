@@ -1,0 +1,83 @@
+name: dockercompose13482761994592179832
+services:
+  Web1:
+    build:
+      context: D:\Web\Load Balancer ASP.NET\LoadBalancer
+      dockerfile: LoadBalancer\Dockerfile
+    container_name: web1
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: loadbalancer
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "5000"
+        protocol: tcp
+      - mode: ingress
+        target: 443
+        published: "5001"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\vladl\AppData\Roaming/Microsoft/UserSecrets
+        target: C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\vladl\AppData\Roaming/ASP.NET/Https
+        target: C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https
+        read_only: true
+        bind:
+          create_host_path: true
+  Web2:
+    build:
+      context: D:\Web\Load Balancer ASP.NET\LoadBalancer
+      dockerfile: LoadBalancer\Dockerfile
+    container_name: web2
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: loadbalancer
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "6000"
+        protocol: tcp
+      - mode: ingress
+        target: 443
+        published: "5002"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\vladl\AppData\Roaming/Microsoft/UserSecrets
+        target: C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\vladl\AppData\Roaming/ASP.NET/Https
+        target: C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https
+        read_only: true
+        bind:
+          create_host_path: true
+  sql_server:
+    container_name: sql_server
+    environment:
+      SA_PASSWORD: Password
+    image: mcr.microsoft.com/mssql/server
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 1433
+        published: "1433"
+        protocol: tcp
+networks:
+  default:
+    name: dockercompose13482761994592179832_default

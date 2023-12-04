@@ -1,0 +1,134 @@
+﻿@using LoadBalancer.Domain.Entity;
+@using Newtonsoft.Json;
+@using LoadBalancer.Domain.Enum;
+@model Matrix
+
+@{
+    ViewData["Title"] = "Task Result";
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<h1 class="mt-4">Task Result</h1>
+
+<div class="container">
+    <h4 class="mt-4">Task Guid - @Model.Guid</h4>
+    <div class="mt-3">
+        <p id="uploading" class="text-muted" style="display: none;">Uploading...</p>
+        <p id="executing" class="text-muted" style="display: none;">Executing...</p>
+        <h4 id="result" class="text-primary" style="display: none;">Task is done!</h4>
+        <h4 id="error" class="text-danger" style="display: none;">Error</h4>
+        <div>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <h5 id="percents"></h5>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary mt-3">Back to Home</a>
+    </div>
+</div>
+
+
+
+<div class="container mt-4">
+    <div class="row">
+        @if (Model != null && Model.GeneratedMatrix != null)
+        {            
+            @Model.GeneratedMatrix
+        }
+        else
+        {
+            <p>No matrix generated yet.</p>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    var taskid = "@Model.Guid";
+    var pgrbar = $('#progress-bar');
+    var uploading = $('#uploading');
+    var executing = $('#executing');
+    var result = $('#result');
+    var error = $('#error');
+    var percents = $('#percents');
+    var startTime = new Date().getTime();
+
+    get_task_info(taskid);
+
+    function get_task_info(tid) 
+    {
+        $.ajax({
+            type: 'get',
+            url: '/Home/TaskResult',
+            data: { guid: tid },
+            success: function (data) 
+            {
+                console.log(data);
+                var currentTime = new Date().getTime();
+                var elapsedTime = (currentTime - startTime) / 1000;
+
+                if (elapsedTime > 30) 
+                {
+                    error.html("Timeout exceeded");
+                    return;
+                }
+
+                if ('@Model.Status' === '@HeavyTaskStatus.INIT') 
+                {
+                    uploading.css('display', 'inline');
+                }
+
+                else if ('@Model.Status' === '@HeavyTaskStatus.RUN') 
+                {
+                    pgrbar.val(@Model.Progress);
+                    pgrbar.css('display', 'inline');
+                    executing.css('display', 'inline');
+                    percents.html(@Model.Progress + "%");
+                    console.log(data);
+                }
+                else if ('@Model.Status' === '@HeavyTaskStatus.SUCCESS') 
+                {
+                    console.log(data);
+                    pgrbar.val(@Model.Progress);
+                    pgrbar.css('display', 'inline');
+                    result.css('display', 'inline');
+                    percents.html(@Model.Progress + "%");
+                }
+                else if ('@Model.Status' === '@HeavyTaskStatus.FAIL') 
+                {
+                    error.css('display', 'inline');
+                }
+                // if ('@Model.Status' != '@HeavyTaskStatus.SUCCESS' &&
+                //     '@Model.Status' != '@HeavyTaskStatus.FAIL') {
+                //     setTimeout(function () {
+                //         get_task_info(tid);
+                //     }, 500);
+                // }
+                if ('@Model.Status' != '@HeavyTaskStatus.SUCCESS' &&
+                    '@Model.Status' != '@HeavyTaskStatus.FAIL') 
+                    {
+                    function refreshPage() {
+                        location.reload();
+                    }
+                    setInterval(refreshPage, 500);
+                }
+            },
+            error: function (data) 
+            {
+                error.css('display', 'inline');
+            }
+        });
+    }
+</script>
+
+
+
+<style>
+
+    #uploading, #result {
+        display: none;
+        margin-bottom: 20px;
+        font-size: 20px;
+    }
+
+    #progress-bar {
+        width: 600px;
+    }
+
+</style>

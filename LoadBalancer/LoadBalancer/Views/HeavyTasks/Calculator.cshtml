@@ -1,0 +1,39 @@
+﻿@using LoadBalancer.Domain.Entity;
+@model Calculator
+
+@{
+    ViewData["Title"] = "Calculator";
+}
+
+<h1 class="mt-4">Calculator</h1>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    <label for="X" class="font-weight-bold">Num1</label>
+                    <input type="number" class="form-control" id="X" name="X" value="@Model.X" min="-2000000" max="2000000">
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="Y" class="font-weight-bold">Num2</label>
+                    <input type="number" class="form-control" id="Y" name="Y" value="@Model.Y" min="-2000000" max="2000000">
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="Result" class="font-weight-bold">Result</label>
+                    <input type="text" class="form-control" id="Result" name="Result" value="@Model.Result" readonly>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-info mr-2" name="action" value="add">+</button>
+                    <button type="submit" class="btn btn-danger mr-2" name="action" value="minus">-</button>
+                    <button type="submit" class="btn btn-warning mr-2" name="action" value="multiply">*</button>
+                    <button type="submit" class="btn btn-success" name="action" value="divide">/</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
