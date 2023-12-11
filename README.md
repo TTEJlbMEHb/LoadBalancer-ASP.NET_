@@ -19,11 +19,7 @@ This project is a ASP.NET MVC application designed to solve difficult tasks in t
 You can add the admin user when creating the database, which happens automatically the first time you run the project. Just enter your data instead of mine in file that is located in path
 > LoadBalancer/LoadBalancer.DAL/ApplicationDbContext.cs
 > 
- To run the app just open the solution in Visual Studio located in path
- > LoadBalancer/LoadBalancer.sln
 
 Then set up your connection string settings to **each** server **(_Loadbalacer_, _Loadbalacer1_ and _BackupServer_)** in files called **appsettings.json** 
 >
 Then just debug **each** server **(The YARP server must be last)**
->
-**_©Load Balancer by Vlad Linnik_**
